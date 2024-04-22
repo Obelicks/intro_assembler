@@ -97,3 +97,64 @@ Get the current value at rax (by CU), add 1 to it (by the ALU).
 Store the new value back to rax.
 
 ## Processor Specific
+As touched upon previously there are two main ISA's:
+**Complex Instrution Set Computer (CISC)** used in Intel and AMD CPU's 
+
+**Reduced Instruction Set Computer (RISC)** ARM and Apple CPU's
+
+### CISC
+Increases the complexity of instructions to lower the overall amount of instruction cycles running on the CPU. 
+
+### RISC
+simple instructions which can be executed in one clock cycle. 
+Supports about 200 instructions as opposed to CISC 1500'ish.
+
+It is said that you can build a general-purpose computer which only supports one instruction.
+
+### CISC vs RISC
+| Aea | CISC | RISC |
+| ----------- | ----------- | ----------- |
+| Complexity | Favors complex instructions | Favors simple instructions |
+| Length of instructions | Longer instructions | Shorter instructions |
+| Total instructions per program | fewer instruction ie. shorter code | more instructions longer code |
+| Optimization | Relies on hw optimization (in CPU) | Relies on software optimization (In Assembly) |
+| Instruction Execution Time | Variable | Fixed - one clock cycle |
+| Instructions supported by cpu | about 1500 | about 200 |
+| Power Consumption | High | very low |
+
+## Registers, Addresses and Data Types
+### Registers
+
+There are two types of registers *data registers* and *pointer registers*
+these are the ones I will focus on.
+| Data Registers | Pointer Registers |
+| ----------- | ----------- | 
+| rax | rbp |
+| rbx | rsp |
+| rcx | rip |
+| rdx | | 
+| r8 | |
+| r9 | |
+| r10 | |
+
+* Data Registers - are usually used for storing instructions/syscall arguments. The primary data registers are: rax, rbx, rcx, and rdx. The rdi and rsi registers also exist and are usually used for the instruction destination and source operands. Then, we have secondary data registers that can be used when all previous registers are in use, which are r8, r9, and r10.
+
+* Pointer Registers - are used to store specific important address pointers. The main pointer registers are the Base Stack Pointer rbp, which points to the beginning of the Stack, the Current Stack Pointer rsp, which points to the current location within the Stack (top of the Stack), and the Instruction Pointer rip, which holds the address of the next instruction.
+
+### Sub-Registers
+Each 64-bit register can be divided into smaller sub-registers
+![sub-reg](assembly_register_parts.jpg)
+
+![table](table-of-registers.png)
+
+The use and purpose of these registers will be explored further down.
+
+### Memory Adresses
+x86_64-bit processors have (as the name suggests) 64-bit wide address range from 0x0 to 0xffffffffffffffff (16xf's). 
+
+There are several ways to fetch adresses
+
+![lower](lower-is-slower.png)
+remember lower is slower.
+
+### Address Endianness
