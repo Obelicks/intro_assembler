@@ -8,7 +8,7 @@
 ![Compilation_Stage](compilation_stage.png)
 
 ## Types of assembly
-* intel x86
+* intel x86_64
 * ARM
     * M1
     * Mobile
@@ -55,9 +55,9 @@ This segmentation is true for the entire systems RAM however each program/applic
 ## I/O
 The Input/Output include: keyboard, screen, long term storage units (hdd,ssd).
 
-The processor access these devices using the Bus Interface which is a highway for data and addresses.
+The processor access these devices using the **Bus Interface** which is a highway for data and addresses.
 
-Accessing a long term storage unit is slower than accessing a RAM mainly due to the fact that this kind of storage isnt volatile like RAM. The benefit of long term storage is that unlike RAM, cache and registers that after a reboot, the data on long term storage units persists while RAM etc. is wiped.
+Accessing a long term storage unit is slower than accessing RAM. However unlike main memory this kind of storage isnt volatile like RAM, cache and registers. The benefit of long term storage is that RAM, cache and registers that after a reboot, the data on long term storage units persists while RAM etc. is wiped.
 
 ## CPU architecture
 
@@ -117,7 +117,7 @@ It is said that you can build a general-purpose computer which only supports one
 | Complexity | Favors complex instructions | Favors simple instructions |
 | Length of instructions | Longer instructions | Shorter instructions |
 | Total instructions per program | fewer instruction ie. shorter code | more instructions longer code |
-| Optimization | Relies on hw optimization (in CPU) | Relies on software optimization (In Assembly) |
+| Optimization | Relies on hardware optimization (in CPU) | Relies on software optimization (In Assembly) |
 | Instruction Execution Time | Variable | Fixed - one clock cycle |
 | Instructions supported by cpu | about 1500 | about 200 |
 | Power Consumption | High | very low |
@@ -139,7 +139,7 @@ these are the ones I will focus on.
 
 * Data Registers - are usually used for storing instructions/syscall arguments. The primary data registers are: rax, rbx, rcx, and rdx. The rdi and rsi registers also exist and are usually used for the instruction destination and source operands. Then, we have secondary data registers that can be used when all previous registers are in use, which are r8, r9, and r10.
 
-* Pointer Registers - are used to store specific important address pointers. The main pointer registers are the Base Stack Pointer rbp, which points to the beginning of the Stack, the Current Stack Pointer rsp, which points to the current location within the Stack (top of the Stack), and the Instruction Pointer rip, which holds the address of the next instruction.
+* Pointer Registers - are used to store specific important address pointers. The main pointer registers are the Base Stack Pointer rbp, which points to the beginning of the Stack, the Current Stack Pointer rsp, which points to the current location within the Stack (top of the Stack), and the Register Instruction Pointer (rip), which holds the address of the next instruction.
 
 ### Sub-Registers
 Each 64-bit register can be divided into smaller sub-registers
@@ -158,3 +158,32 @@ There are several ways to fetch adresses
 remember lower is slower.
 
 ### Address Endianness
+An address Endian is the order of which the bytes are stored or retrieved from memory.
+
+### Little-Endian
+Here the little or ending byte is filled/retrieved first. **right to left**
+
+
+### Big-Endian
+Here its the big or starting byte that is filled/retrieved first. **left to right**
+
+**example**
+
+`0x0011223344556677` is the address we would like to store in memory.
+
+with **little-endian** we would first store 0x00 and then 0x11 -> 0x1100 -> 0x221100 -> 0x33221100 -> 0x4433221100 -> 0x554433221100 -> 0x66554433221100 -> 0x7766554433221100. So basically the value is stored in reverse.
+
+if we wanna store a binary interger like 426 = 0000001 10101010 it would be stored in reverse 10101010 00000001 which could read as 43521 if not retrieved with little endian in mind. 
+
+**little-Endian** is used with Intel/AMD x86 so I will default to this one if I don't specify something else.
+
+### Data Types 
+
+| Component | Length | Example | 
+| ---------- | -------- | -------- |
+| byte | 8 bits | 0xab | 
+| word | 16 bits (2 bytes) | 0xabcd |
+| double word (dword) | 32 bits - (4 bytes)| 0xabcdef12 | 
+|quad word (qword) | 64 bits - 8 bytes | 0xabcdef1234567890 |
+
+## Assembly File Structure
