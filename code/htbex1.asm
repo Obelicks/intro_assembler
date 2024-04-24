@@ -1,7 +1,7 @@
 global  _start
 
 section .data
-    message: db      "Hello HTB Academy!", 0x0a
+    message: db "Hello HTB Academy!", 0x0a
     len equ $ - message
 
 section .text
