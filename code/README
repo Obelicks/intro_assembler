@@ -1,3 +1,4 @@
+for 32 bit
 nasm -f elf32 ex.asm -o ex.o
 ld -m elf_i386 ex.o -o ex
 ./ex
@@ -5,3 +6,6 @@ ld -m elf_i386 ex.o -o ex
 the first example exits with a status code so to see the result use the command
 
 > echo $? 
+
+64 bit
+nasm -f elf64 htbex1.asm ; ld -m elf_x86_64 -s -o htbex htbex1.o 
