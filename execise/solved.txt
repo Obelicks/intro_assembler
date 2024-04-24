@@ -1,1 +1,3 @@
-Reading Data is Fun
+1) Reading Data is Fun
+
+2) Registers hold alot of secrets
