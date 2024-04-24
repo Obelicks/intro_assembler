@@ -289,3 +289,83 @@ the flags: `--no-show-raw-insn --no-addresses`
 can be used to remove machine code and address leaving you with only assembly instructions.
 
 `-sj .data` can be used to read the .data section
+
+## GNU Debugger (GDB)
+Alternatives to GDB include Radare, Hopper, Immunity Debugger and WinGDB.
+
+A great plugin for GDB is [GEF](https://github.com/hugsy/gef)
+GEF is build with reverse engineering and binary exploitation in mind.
+
+| call | purpose | 
+| -----| ------- |
+| info | shows available info calls |
+| info function | prints functions (_start) |
+| info variables | prints variables |
+| disas <func> | disassemble the function |
+
+### Debugging with GDB
+
+| Step | Description | 
+| -----| ------- |
+| Break | POI in the code |
+| Examine | Running the program at examining its state at break points |
+| Step  | Moving through the program one instruction at a time |
+| Modify  | change register or address values to see how it affects the program |
+
+#### Break
+Breakpoints are essential in debugging they usually are placed before logical forks in the code to inspect the programs state, so the programmer can determine why the program is misbahaving.
+
+b or break can be used in GDB 
+
+`b _start` will set a breakpoint at the _start label.
+
+use r or run to run the program in GDB
+
+If we want to set a breakpoint at a certain address, like _start+10, we can either b *_start+10 or b *0x40100a (note that start is at 0x401000 a is hexadecimal for 10)
+
+use c or continue to continue or to next break point or program termination. 
+
+use r or run to restart.
+
+If we want to see what breakpoints we have at any point of the execution, we can use the info breakpoint command. We can also disable, enable, or delete any breakpoint. Furthermore, GDB also supports setting conditional breaks that stop the execution when a specific condition is met.
+
+#### Examine
+
+to examine we can use the x command (help x)
+
+´x/FMT ADDRESS´
+
+FMT is short for format and can have three parts: count, format, size
+
+* **Count** can be any non negative integer which represent how many times we would like to repeat the examine
+* **Format** x(hex) s(string) or i(instruction)
+* **Size** b(byte) h(halfword) w(word)g(giant 8bytes)
+
+example reading the next four instruction of the code can be done with x/4ig $rip
+which reads 4 instructions of size giant from the rip registry (instruction pointer).
+
+**Strings**
+`x/s 0x402000` can be used to read the string stored at that memory address
+
+**Addresses**
+`x/wx 0x401000`prints the value stored at address 0x401000 in hexadecimal. Since we have instructions stored there it could be prudent to print with "i" to get the instruction rather than its hexadecimal notation.
+
+using GEF we can print the value of all registers with the call `registers` simple right?
+
+**Step**
+
+stepping is progressing the code one step as if there was a break point right after the current break point. This can really help getting an overview at how the machine actually handles the code that was parsed to it. 
+
+**Step Instruction**
+``stepi` or `si` will ask the debugger to step forward.
+
+**Step count**
+you can add an integer to step forward a given amount of steps like 5: `si 5`
+
+#### Modify
+This lets us modify values at certain points in the execution to see the impact it has on the program.
+
+in GDP there is the `set` command to do this. But the `patch` command from GEF is considered easier to use.
+
+
+
