@@ -223,5 +223,69 @@ As can be seen in the htbex1.asm file there is three main parts:
 | section .data | this is the data section, which should contain all of the variables. | 
 | section .text | this is the text section containing all of the code to be executed. |
 ### Directives
+Assembly code is line-based and will execute line by line. 
+global _start tells assembler to jump to the label _start and start executing from the label and down.
 
- 
+### Variables
+This is the **.data** section. Once the program is run all varialbes defined will be loaded into memory and be accessible for the program. This is part of the preprocess and is such happens before the program starts executing at **_start**
+
+ | Instruction | Description |
+| -------- | -----------|
+| db 0x0a | Defines the byte 0x0a, which is a new line. |
+| message db 0x41, 0x42, 0x43, 0x0a | Defines the label message => abc\n. |
+| message db "Hello World!", 0x0a | Defines the label message => Hello World!\n | 
+
+Using `len equ $-message` declares a variable len which is equal to the length of the variable message.
+
+### Code
+the **.text** section holds all of the assembly instructions nad loads them into the memory segment. When all instructions are loaded the execution can begin. 
+
+One the **.text** segment is loaded into memory it is *read-only* where the **.data** is read/write. This distinction is part of memory protection to mitigate buffer overflows among other binary exploitations. 
+
+## Assembling & Disassembling
+Using the `nasm` tool we can compile our code and the use the tool `ld` to link the compiled code with OS features and libraries. 
+
+Note: that using the file extensions .s or .asm are common practise.
+
+`nasm -f elf64 helloworld.s`
+
+Note: since we are using the 64 bit register names we also have to compile to 64 bit.
+Compiling to 32 is done with `-f elf`
+
+This is output a **helloworld.o** file which can be linked with **ld**.
+
+`ld -o helloWorld helloworld.o`
+
+Note: 32 bit would require the flag `-m elf_i386`
+
+now there should be an executable helloWorld program which can be executed wiht `./helloWorld`
+
+### Disassembling 
+
+`objdump -M intel -d <binary>`
+
+```
+objdump -M intel -d helloWorld
+
+helloWorld:     file format elf64-x86-64
+
+Disassembly of section .text:
+
+0000000000401000 <_start>:
+  401000:	b8 01 00 00 00       	mov    eax,0x1
+  401005:	bf 01 00 00 00       	mov    edi,0x1
+  40100a:	48 be 00 20 40 00 00 	movabs rsi,0x402000
+  401011:	00 00 00
+  401014:	ba 12 00 00 00       	mov    edx,0x12
+  401019:	0f 05                	syscall
+  40101b:	b8 3c 00 00 00       	mov    eax,0x3c
+  401020:	bf 00 00 00 00       	mov    edi,0x0
+  401025:	0f 05                	syscall
+  ```
+
+Note that nasm changed many of the 64 bit registers to 32 bit registers where possible to use less memory. 
+
+the flags: `--no-show-raw-insn --no-addresses` 
+can be used to remove machine code and address leaving you with only assembly instructions.
+
+`-sj .data` can be used to read the .data section
