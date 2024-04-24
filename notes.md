@@ -187,3 +187,41 @@ if we wanna store a binary interger like 426 = 0000001 10101010 it would be stor
 |quad word (qword) | 64 bits - 8 bytes | 0xabcdef1234567890 |
 
 ## Assembly File Structure
+htbex1.asm
+```
+global  _start
+
+section .data
+    message: db "Hello HTB Academy!", 0x0a
+    len equ $ - message
+
+section .text
+_start:
+    mov     rax, 1
+    mov     rdi, 1
+    mov     rsi, message
+    mov     rdx, len
+    syscall
+    
+    mov     rax, 60
+    mov     rdi, 0
+    syscall
+```
+
+![file_struct](file_struct.png)
+
+Essentially each line is made up of upto three elements
+
+1. Labels
+2. Instructions
+3. Operands
+
+As can be seen in the htbex1.asm file there is three main parts:
+| Section | Description |
+| -------- | -----------|
+| global _start | This is a directive that directs the code to start eecuting at the _start label defined below |
+| section .data | this is the data section, which should contain all of the variables. | 
+| section .text | this is the text section containing all of the code to be executed. |
+### Directives
+
+ 
