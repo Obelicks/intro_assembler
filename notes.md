@@ -367,4 +367,39 @@ This lets us modify values at certain points in the execution to see the impact 
 
 in GDP there is the `set` command to do this. But the `patch` command from GEF is considered easier to use.
 
-## module
+# Module Project
+By the end of this module we will have developed a program that prints the fibonacci chain of numbers
+
+## Data Movemment
+* `mov` move data or load immidiate data
+* `lea` Load an address pointing to a value
+* `xchg` Swap data between two registers or addresses
+
+Not that `mov` intuitively works more like a copy since moving data from one register to the other doesnt remove it from the sending register, where the data is moved from. So its better to think of it as copy.
+
+As we know, when asm code is translated into binary some changes in the name of optimization can happen. However it can be more effiecient to do those optimizations yourself. 
+
+For example when moving 0 and 1 into a 64-bit register the nasm compiler will turn that code into 32-bit registers. However 32-bit is still way to much space to store that little data. Using the 1-byte registers al and bl is more effiecient.
+
+## Address Pointers 
+Some times data is not immidiatly present in a register, instead an address pointer is present in the register telling you where the data you want is located. This is always the case with **rsp**, **rbp** and **rip**.
+
+### Moving Pointer Values
+Consider the following line from gsb
+`$rsp   : 0x00007fffffffdc30  →  0x0000000000000001`
+This line indicates that **rsp** has the value of `0x00007fffffffdc30`which is an address pointing to the actual value of `0x0000000000000001` say we move rsp into rax. What value does rax have then? 
+
+`0x00007fffffffe490`! If we want the value that **rsp** points to, we will have to tell assembler that it needs to resolve the address in **rsp** and read that value.
+
+This is done by using **[ ]** in x86_64 and Intel syntax this mean load value at address. So to get the value at address **rsp** into rav we would type `mov rax, [rsp]`
+
+This is shown in code/rsp.asm
+
+Note that nasm help with the pointer resolution `mov    rax, QWORD PTR [rsp]`
+
+### Loading Value Pointers 
+´lea rax, [rsp]´ is kinda the opposite of what we just learned.
+Sometimes we need to load the address of a value into a register rather than the actual value. 
+
+`lea` trully comes into its own when used with offsets like `[rsp+10]`
+

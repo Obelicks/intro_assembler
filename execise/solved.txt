@@ -1,3 +1,5 @@
 1) Reading Data is Fun
 
 2) Registers hold alot of secrets
+
+3) remember square brackets.
