@@ -3,7 +3,7 @@
 
 **assembler**: add rax, 1 == **shellcode**: 4883C001
 
-**shellcode** is a hex representation fo **machine code**.
+**shellcode** is a hex representation of **machine code**.
 
 ![Compilation_Stage](compilation_stage.png)
 
