@@ -8,3 +8,6 @@ exercise/*
 !exercise/*.sh
 !exercise/*.zip
 !exercise/*.txt
+
+project/*
+!project/*.asm
