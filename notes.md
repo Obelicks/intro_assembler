@@ -403,3 +403,27 @@ Sometimes we need to load the address of a value into a register rather than the
 
 `lea` trully comes into its own when used with offsets like `[rsp+10]`
 
+### Arithmetic Instructions
+
+The arithemetic instructions are typically processed by the ALU on the CPU. There are two types of Arithmetic Instructions:
+* Unary
+* Binary
+#### Unary
+types of **unary** instructions:
+inc & dec. As the names suggest these operations increment or decrement the argument
+
+#### Binary
+add, sub(tract) and imul (multiply), are binary operations since they need two operands. The operands can (ofcourse) be the same like `add rax, rax` 
+
+**Note**: the computed value is always moved to the first operand in the above example **rax**
+
+#### Bitwise Instructions
+These operations work on a binary level 
+* not -> inverts all bits 
+* and 
+* or 
+* xor -> good for resetting -> xor rax,rax -> 0x00
+
+
+## Loops
+
