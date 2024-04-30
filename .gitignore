@@ -1,3 +1,10 @@
 code/*
 !code/*.asm
 !code/*.sh
+!code/*.zip
+
+exercise/*
+!exercise/*.asm
+!exercise/*.sh
+!exercise/*.zip
+!exercise/*.txt
