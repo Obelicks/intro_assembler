@@ -5,3 +5,5 @@
 3) remember square brackets.
 
 loops)  remember to Jump the LOOP
+
+unconditional) jump like its a break
