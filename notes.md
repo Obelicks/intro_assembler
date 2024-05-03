@@ -460,3 +460,85 @@ loopFib:
     loop loopFib        ; while rcx != 0 jmp to loopFib
 ```
 
+### Unconditional Branching
+
+Another type of **Control Instruction** is **Branching Instructions**. These types of instructions allow the program to **jump** to any point in the code, if a specific condition is met. 
+
+#### JMP
+the **jmp** instruction jumps the program to the label specified. `jmp jumpLabel`
+
+for looping purposes we can adapt the loopFib.asm 
+
+```
+global  _start
+
+section .text
+_start:
+    xor rax, rax    ; initialize rax to 0
+    xor rbx, rbx    ; initialize rbx to 0
+    inc rbx         ; increment rbx to 1
+    mov rcx, 10
+loopFib:
+    add rax, rbx    ; get the next number
+    xchg rax, rbx   ; swap values
+    jmp loopFib
+```
+Notice a problem? since jmp is unconditional this program will not terminate by itself but will keep finding bigger and bigger fibonacci numbers until manually terminated.
+This is because there is no exit condition. 
+
+### Conditional Branching
+Conditional Branching is jump statements, that only jumps to the label if a condition is met. There are many of these statement below is a table of the most used once:
+
+
+| Instruction | Condition | Description |
+| ----------- | --------- | ----------- | 
+| jz | D = 0 | Destination equal to Zero |  
+| jnz | D != 0 | Destination Not equal to Zero |  
+| js | D < 0 | Destination is Negative |
+| jns | D >= 0 | Destination is Not Negative |
+| jg | D > S | Destination Greater than Source |
+| jge | D >= 0 | Destination Greather than or Equal to Source |
+| jl | D < S | Destination Less than Source |
+| jle | D =< S | Destination Less or equal to Source |  
+
+Conditional instructions are not exclusive to the jmp instruction. 
+
+For example, if we wanted to perform a mov rax, rbx instruction, but only if the condition is = 0, then we can use the CMOVcc or conditional mov instruction, such as cmovz rax, rbx instruction. Similarly, if we wanted to move if the condition is <, then we can use the cmovl rax, rbx instruction, and so on for other conditions. The same applies to the set instruction, which sets the operand's byte to 1 if the condition is met or 0 otherwise. An example of this is setz rax.
+
+#### RFLAGS Register
+The RFLAGS register is a 64-bit register but unlike other registers it does not hold values but "flag bits" instead.
+
+if a dec instruction results in a 0 then bit **#6** the Zero Flag ZF turns to 1 (meaning True).
+
+When a devision operations results in a float the Carry Flag **CF** will be 1, similarily if the sub instruction yield a negative number the Sign Flag SF will turn on.
+
+There are many flags but for this text we will be most interested in these:
+* The Carry Flag CF: Indicates whether we have a float.
+* The Parity Flag PF: Indicates whether a number is odd or even.
+* The Zero Flag ZF: Indicates whether a number is zero
+* The Sign Flag SF: Indicates whether a register is negative.
+
+As previousl mentioned the **loop** operation is two operations in one `dec rcx` `jnz loopFip`.
+
+```
+global  _start
+
+section .text
+_start:
+    xor rax, rax    ; initialize rax to 0
+    xor rbx, rbx    ; initialize rbx to 0
+    inc rbx         ; increment rbx to 1
+    mov rcx, 10
+loopFib:
+    add rax, rbx    ; get the next number
+    xchg rax, rbx   ; swap values
+    dec rcx			; decrement rcx counter
+    jnz loopFib		; jump to loopFib until rcx is 0
+    
+```
+
+GEF will capitalize the bit that is on:
+
+`$eflags: [ZERO carry PARITY adjust sign trap INTERRUPT direction overflow RESUME virtualx86 identification]`
+
+#### CMP
