@@ -427,3 +427,36 @@ These operations work on a binary level
 
 ## Loops
 
+In this part we further examining **Control Instructions** including
+* Loops
+* Branching 
+* Function Calls
+
+### Loop Structure
+**loop.asm**
+```
+exampleLoop:
+    instruction 1
+    instruction 2
+    instruction 3
+    instruction 4
+    instruction 5
+    loop exampleLoop
+```
+When using the **loop** instruction you have to move the number of desired iterartions into the **rcx** register, because everytime the **loop** instruction is seen it implicitly runs the instruction ``dec rcx`` and if rcx is not zero it jumps to the label in the instruction.
+
+```
+global  _start
+
+section .text
+_start:
+    xor rax, rax        ; xor with itself to clear all data to 0x00
+    xor rbx, rbx        ; ------||------
+    inc rbx             ; incrementing register rbx (64-bit)
+    mov rcx, 10         ; moving 10 into rcx (the loop register)
+loopFib:
+    add rax, rbx        ; add rax and rbx storing the result in rax
+    xchg rax, rbx       ; swap values in the provided registers
+    loop loopFib        ; while rcx != 0 jmp to loopFib
+```
+
