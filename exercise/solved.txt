@@ -3,3 +3,5 @@
 2) Registers hold alot of secrets
 
 3) remember square brackets.
+
+loops)  remember to Jump the LOOP
