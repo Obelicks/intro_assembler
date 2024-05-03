@@ -7,3 +7,5 @@
 loops)  remember to Jump the LOOP
 
 unconditional) jump like its a break
+
+conditional) 1 might be the loneliest number, but 2 can be as bad

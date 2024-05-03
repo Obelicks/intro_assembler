@@ -542,3 +542,27 @@ GEF will capitalize the bit that is on:
 `$eflags: [ZERO carry PARITY adjust sign trap INTERRUPT direction overflow RESUME virtualx86 identification]`
 
 #### CMP
+
+| Instruction |	Description | Example |
+| ----------| ------------- |--------|
+| cmp | Sets RFLAGS by subtracting second operand from first operand (i.e. first - second) | cmp rax, rbx -> rax - rbx |
+
+using `cmp rbx, 10 -> rbx - 10` the result will not be stored anywhere but will affect the flags like negative if rbx < 10 will be turned on (NEGATIVE).
+
+This means we can use the **js** to jump to a looping label.
+
+```
+global  _start
+
+section .text
+_start:
+    xor rax, rax    ; initialize rax to 0
+    xor rbx, rbx    ; initialize rbx to 0
+    inc rbx         ; increment rbx to 1
+loopFib:
+    add rax, rbx    ; get the next number
+    xchg rax, rbx   ; swap values
+    cmp rbx, 10		; do rbx - 10
+    js loopFib		; jump if result is <0
+```
+
