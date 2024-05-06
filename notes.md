@@ -570,7 +570,7 @@ loopFib:
 
 The Stack is a segment of memory allocated for the program to store data in.
 
-The top of the stack is pointed at by the rsp register. 
+The top of the stack is pointed at by the **rsp** register. 
 
 data can be pushed and poped to the stack
 
@@ -578,3 +578,43 @@ data can be pushed and poped to the stack
 | ----------- | ----------- | ------- |
 | push |	Copies the specified register/address to the top of the stack |	push rax |
 | pop | Moves the item at the top of the stack to the specified register/address |	pop rax |
+
+The **Stack** is a Last-in First-out structure. Like with **mov** when we **push** to the stack the data is copied from the register, meaning the register retains its value after the push instructions has executed. *However* it is important to remember that pop will remove the first block of data on the stack, so as to make way for the next element on the stack.
+
+Note that Syscalls make use of registers and might overwrite what you have stored in them. A good practise is to push registers to the stack before a syscall, to avoid problems.
+
+## Syscalls
+A **syscall** is like a globally available function written in C, provided by the system kernel. 
+
+On linux all syscalls are defined in the **unistd_64.h**
+
+`cat /usr/include/x86_64-linux-gnu/asm/unistd_64.h`
+
+Note the 64 in the file name. The 32-bit equivalent file is called **unistd_32.h**
+
+### Syscall Arguments
+
+| Description | 64-bit Register |
+| ----------- | --------------- |
+| Syscall Number / Return Value | rax |
+| Callee Saved | rbx |
+| 1st arg | rdi |
+| 2nd arg | rsi |
+| 3rd arg | rdx |
+| 4th arg | rcx |
+| 5th arg | r8 |
+| 6th arg | r9 | 
+
+Very few syscalls use more than 6 arguments, but those few that do use the stack to store the remaining arguments, so it's a good idea to keep an eye out of those. 
+
+Lets keep it simple in here however. Using the write syscall we need to provide 3 things: Where to write usually this will be the value 1 meaning **stdout**, **pointer to the string to write**, **length of string (int)** Respectivly these values whould be moved to **rdi, rsi and rdx**
+
+1. rdi -> 1
+2. rsi -> 'Some String\n'
+3. rdx -> 12
+
+Given that strings are very big data stuctures they can be hard to contain in a registers so its usually better to pass a pointer to a string variable. 
+
+'man -s 2 <syscall>' prints the manual entry for the syscall detailing the arguments to be passed to it.
+
+## Procedures
