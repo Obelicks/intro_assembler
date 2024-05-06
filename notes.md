@@ -592,6 +592,8 @@ On linux all syscalls are defined in the **unistd_64.h**
 
 Note the 64 in the file name. The 32-bit equivalent file is called **unistd_32.h**
 
+[Syscall Table](https://filippo.io/linux-syscall-table/)
+
 ### Syscall Arguments
 
 | Description | 64-bit Register |
@@ -618,3 +620,42 @@ Given that strings are very big data stuctures they can be hard to contain in a 
 'man -s 2 <syscall>' prints the manual entry for the syscall detailing the arguments to be passed to it.
 
 ## Procedures
+As code grows in complexity the need for refactorization grows aswell. One way to simplify assembly code is to use procedures.
+
+A procedure, sometimes called a subroutine, is a set of instructions which we expect to be used by the program multiple times, instead of writing the same lines of code multiple places we can write them in a procedure and call the procedure when we need it.
+
+```
+global  _start
+
+section .data
+    message db "Fibonacci Sequence:", 0x0a
+
+section .text
+_start:
+
+printMessage:
+    mov rax, 1       ; rax: syscall number 1
+    mov rdi, 1      ; rdi: fd 1 for stdout
+    mov rsi,message ; rsi: pointer to message
+    mov rdx, 20      ; rdx: print length of 20 bytes
+    syscall         ; call write syscall to the intro message
+
+initFib:
+    xor rax, rax    ; initialize rax to 0
+    xor rbx, rbx    ; initialize rbx to 0
+    inc rbx         ; increment rbx to 1
+
+loopFib:
+    add rax, rbx    ; get the next number
+    xchg rax, rbx   ; swap values
+    cmp rbx, 10		; do rbx - 10
+    js loopFib		; jump if result is <0
+
+Exit:
+    mov rax, 60
+    mov rdi, 0
+    syscall
+```
+
+### CALL / RET
+
