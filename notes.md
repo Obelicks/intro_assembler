@@ -566,3 +566,15 @@ loopFib:
     js loopFib		; jump if result is <0
 ```
 
+## Using the Stack
+
+The Stack is a segment of memory allocated for the program to store data in.
+
+The top of the stack is pointed at by the rsp register. 
+
+data can be pushed and poped to the stack
+
+| Instruction | Description | Example |
+| ----------- | ----------- | ------- |
+| push |	Copies the specified register/address to the top of the stack |	push rax |
+| pop | Moves the item at the top of the stack to the specified register/address |	pop rax |
