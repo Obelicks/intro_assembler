@@ -12,3 +12,4 @@ exercise/*
 
 project/*
 !project/*.asm
+!project/*.sh

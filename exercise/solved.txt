@@ -6,6 +6,8 @@
 
 loops)  remember to Jump the LOOP
 
+functions) I 8 to tell you this
+
 unconditional) jump like its a break
 
 conditional) 1 might be the loneliest number, but 2 can be as bad
