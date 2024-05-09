@@ -701,3 +701,42 @@ Exit:
     syscall
 ```
 
+## Functions
+Functions are similar to procedures with the key difference that we expect a function to make use of all registers, that means that we can't just call a function like with a procedure rather we have to use the **Calling Convention**
+
+1. Save Registers on the stack(**Caller Saved**)
+2. Pass Function Arguments
+3. Fix Stack Alignment
+4. Get Function's Return Value (In **rax**)
+
+There is also the other side of the coin as there is also a **Function Convention**.
+
+1. Saving Callee Saved registers rbx and rbp
+2. Get arguments from the registers
+3. Align the Stack
+4. Return value in **rax**
+
+### Using External Functions
+the write syscall only takes ASCII characters and converting an integer to an ASCII character in assembly is beyond the scope. So we will use an external function from libc, which is the **printf**.
+
+The way to use external functions in assembly is similiar to other programming languges you import it at the head of your source code:
+```
+global _start
+extern printf
+
+<assembly code...>
+``` 
+
+Notice in the below code how we pop in reverse of how we pushed. Remember that the stack is **LIFO**
+```
+printFib:
+    push rax        ; rax to the top of the stack
+    push rbx        ; rbx to the top of the stack
+    ; function call
+    pop rbx
+    pob rax
+```
+
+#### Function arguments 
+Its time to consult the man!
+`man -s 3 printf` `int printf(const char *restric format, ...);`
