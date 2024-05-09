@@ -3,8 +3,8 @@ extern  printf,scanf    ; importing printf and scanf from libc
 
 section .data
     message db "Please input max Fn: ", 0x0a
-    outFormat db  "%d", 0x0a, 0x00
-    inFormat db "%d", 0x00
+    outFormat db  "%lld", 0x0a, 0x00
+    inFormat db "%lld", 0x00
 
 section .bss
     userInput resb 1    ; 1 byte Buffer Space
