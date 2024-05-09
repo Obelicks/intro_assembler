@@ -737,6 +737,10 @@ printFib:
     pob rax
 ```
 
+#### Stack Alignment
+The stack needs to be aligned when calling a function this is for cpu runtime optimization an is enforced by the C libaries. 
+
 #### Function arguments 
 Its time to consult the man!
 `man -s 3 printf` `int printf(const char *restric format, ...);`
+
