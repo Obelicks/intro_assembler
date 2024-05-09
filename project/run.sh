@@ -1,0 +1,1 @@
+nasm -f elf64 fibonacci.asm && ld fibonacci.o -o fib -lc --dynamic-linker /lib64/ld-linux-x86-64.so.2 && ./fib
