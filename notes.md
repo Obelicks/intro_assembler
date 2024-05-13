@@ -744,3 +744,142 @@ The stack needs to be aligned when calling a function this is for cpu runtime op
 Its time to consult the man!
 `man -s 3 printf` `int printf(const char *restric format, ...);`
 
+# Shell Codes
+A shell code is, as we touched upon earlier, a hexadecimal representation of the binary executable.
+
+The "Hello World" program from earlier would look like this in shellcode `48be0020400000000000bf01000000ba12000000b8010000000f05b83c000000bf000000000f05`
+
+## Use in Pentesting
+Having the ability to pass shellcode into the processors memory is essential in Binary Exploitation. We could for example pass a reverse shell to the processor.
+
+Modern x86_64 systems have protection aganinst loading shellcode into memory. 
+
+Another great use case of shellcode is when we can inject it directly into memory and not have to write anything to the disk making it that much harder to detect 
+
+## Assembly to Machine Code 
+translating assembly code to shell code manually is not worth the effort. Luckily there is a python tool pwntools
+
+`sudo pip3 install pwntools`
+
+```
+$ pwn asm 'push rax' -c 'amd64'
+50
+```
+
+```
+bloechrr@htb[/htb]$ pwn disasm '50' -c 'amd64'
+   0:    50                       push   rax
+```
+
+Using the shellcoder.py in the shell_code directory you can pass a binary file as arg 1 to have its shellcode printed.
+
+if you have some shell code you would like to test before running it on metal use the loader.py script with the shellcode string as arg 1
+
+Finally we can assembel and debug our code with the assembler.py script arg 1 is for shellcode and 2nd argument is for the name of the output binary which we can then debug with `gdb -q <binaryName>`
+
+if you set at breakpoin at `*0x401000` you will break at the default binary entry point.
+
+## Shell Coding Techniques
+Not all binaries give working shellcodes which can be loaded directly into memory and run. 
+If we look at the  shellcode from a Hello World program:
+
+```
+pwn disasm '48be0020400000000000bf01000000ba12000000b8010000000f05b83c000000bf000000000f05' -c 'amd64'
+   0:    48 be 00 20 40 00 00 00 00 00    movabs rsi,  0x402000
+   a:    bf 01 00 00 00           mov    edi,  0x1
+   f:    ba 12 00 00 00           mov    edx,  0x12
+  14:    b8 01 00 00 00           mov    eax,  0x1
+  19:    0f 05                    syscall
+  1b:    b8 3c 00 00 00           mov    eax,  0x3c
+  20:    bf 00 00 00 00           mov    edi,  0x0
+  25:    0f 05                    syscall
+```
+
+We can see that the instructions are similair to what we expect but not entirely indentical
+
+We can see that our data file with "Hello World" is not in the disassembled code for example.
+
+For Shell Code to be "compliant" it needs to adheer to the **Shellcoding Requirements**
+1. Does not contain variables
+2. Does not refer to direct memory addresses 
+3. Does not contain any NULL bytes 00
+
+Lets look at the hello world source code:
+
+```
+global _start
+
+section .data
+    message db "Hello HTB Academy!"
+
+section .text
+_start:
+    mov rsi, message
+    mov rdi, 1
+    mov rdx, 18
+    mov rax, 1
+    syscall
+
+    mov rax, 60
+    mov rdi, 0
+    syscall
+```
+
+### Remove Variables
+Since variables are not alowed in shellcode we have to have all our operations happen inside the .text section of the code.
+
+The two options we have is to either move the string into registers (which can contain 8 bytes), which only works for smaller strings
+
+The other options is to push the string to the stack 16 bytes at a time to ensure alignment.
+
+```
+    push 'y!'
+    push 'B Academ'
+    push 'Hello HT'
+    mov rsi, rsp
+```
+This would exceed the allowed bounds of immediate strings push which is 4 bytes at a time: 
+```
+    mov rbx, 'y!'
+    push rbx
+    mov rbx, 'B Academ'
+    push rbx
+    mov rbx, 'Hello HT'
+    push rbx
+    mov rsi, rsp
+```
+
+### Remove Addresse 
+With the removal of the variable address we removed every address reference in the hello world code. 
+
+To continue to adhere to shellcode compliance we need to avoid direct memory addresses, and stick to labels and relative memory addresses.
+
+Throghout theses notes relative addresses and labal is all we have been using. 
+
+These are the steps to fix having direct  memory addreses
+
+
+1.  Replacing with calls to labels or rip-relative addresses (for calls and loops)
+2.  Push to the Stack and use rsp as the address (for mov and other assembly instructions)
+
+### Remove NULL 
+NULL charactrers 0x00 are used as string terminators. looking back at the pwn disasm output we see alot of 00's this commonly happens when moving small integers into large registers, the way its handled is that the compiler "pads" the register with NULL bytes. 
+
+`pwn asm 'mov rax, 1' -c 'amd64'`
+
+to avoid this padding we can use the appropriate register size 
+
+`mov al, 1`
+
+before moving data into al remember to clear the 64-bit parent register for data.
+
+```
+$ pwn asm 'xor rax, rax' -c 'amd64'
+4831c0
+$ pwn asm 'mov al, 1' -c 'amd64'
+b001
+ ```
+I have rewritten the htbex.asm to be shellcode compliant in > code/shell_comp_hello_world.asm 
+
+compiling to shellcode gives `4831db66bb79215348bb422041636164656d5348bb48656c6c6f204854534889e64831c0b0014831ff40b7014831d2b2120f054831c0043c4030ff0f05`
+
